@@ -2,7 +2,7 @@ from HEC import *
 from GF import *
 
 class Point_of_HEC():
-    curve: HEC_general
+    curve: HEC
     field: GF
     x: int
     y: int

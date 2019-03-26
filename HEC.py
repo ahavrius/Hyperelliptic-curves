@@ -1,35 +1,34 @@
-from sympy.polys.domains import ZZ
 from sympy.polys.galoistools import gf_normal, gf_degree
 from GF import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-gf_normal([5, 10, 21, 5, -3], 5, ZZ)
-
-
-class HEC_general():
+class HEC():
     field: GF
     h: list
     f: list
     genus: int
-
+    _h: list
+    _f: list
     def __init__(self, p, n, h, f):
         self.field = GF(p, n)
+        self._h = h
+        self._f = f
         self.h_canonic(h)
         self.f_canonic(h, f)
+        self.simpify()
         self.genus = gf_degree(f)/2 - 1
 
     def h_canonic(self, h):
         if (self.field.p == 2):
-            self.h = self.field.reduce(h)
+            self.h = h
         else:
             self.h = []
 
     def f_canonic(self, h, f):
         if (self.field.p != 2):
             h_inv = [ i * mod_inv(4, self.field.p) for i in h]
-            f = self.field.add(f, self.field.mul(h, h_inv))
-        self.f = self.field.reduce(f)
+        self.f = self.field.add(f, self.field.mul(h, h_inv))
 
     def is_canonic(self):
         return self.h == []
@@ -46,11 +45,36 @@ class HEC_general():
         res3 = np.multiply(v, poly_calc(u, h_deriv)) - poly_calc(u, f_deriv)
         return sum((res1 == 0) & (res2 == 0) & (res3 == 0)) == 0
 
-    def drow_curve(self):
-        y, x = np.ogrid[-10:10:100j, -10:10:100j]
-        plt.contour(x.ravel(), y.ravel(), pow(y, 2) + y * poly_calc(x, self.h[::-1]) - poly_calc(x, self.f[::-1]), [0])
+    def simpify(self):
+        self.h = self.field.reduce(self.h)
+        self.f = self.field.reduce(self.f)
+
+    def _coef(self, real):
+        if real:
+            h = self._h[::-1]
+            f = self._f[::-1]
+        else :
+            h = self.h[::-1]
+            f = self.f[::-1]
+        return h, f
+
+    def drow_curve(self, real = True):
+        y, x = np.ogrid[-10:10:300j, -10:10:300j]
+        h, f = self._coef(real)
+        plt.contour(x.ravel(), y.ravel(), pow(y, 2) + y * poly_calc(x, h) - poly_calc(x, f), [0])
         plt.grid()
         plt.show()
+
+    def str(self, real = False):
+        h, f = self._coef(real)
+        h_str = [' {}u^{} '.format(h[i], i)  for i in range(len(h)) if h[i] != 0 ]
+        f_str = [' {}u^{} '.format(f[i], i)  for i in range(len(f)) if f[i] != 0 ]
+        if not f:
+            f_str = '0'
+        res = 'v^2 +' + '+'.join(h_str) + '= ' + '+'.join(f_str)
+        res = res.replace('+= ', '= ')
+        res = res.replace('+ -', '- ')
+        return res
 
 #    @classmethod
 
@@ -61,9 +85,11 @@ g = ff.mul([1], [1, 1, 1])
 print(ff.reducing)
 print(g)
 
-crv = HEC_general(5, 12, [], [1, 0, 0])
+crv = HEC(5, 12, [], [1, 0, -5, 0, 4, 0])
 print(crv.h)
 print(crv.f)
-crv.drow_curve()
+crv.drow_curve(True)
+crv.drow_curve(False)
 print(crv.is_correct())
+print (crv.str(True))
 """

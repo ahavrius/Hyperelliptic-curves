@@ -34,8 +34,11 @@ class GF():
     def mul(self, x, y):
         return gf_rem(gf_mul(x, y, self.p, ZZ), self.reducing, self.p, ZZ)
 
-    def  reduce(self, x):
-        return gf_rem(x, self.reducing, self.p, ZZ)
+    def minus(self, x):
+        return gf_sub([0], x, self.p, ZZ)
+
+    def reduce(self, x):
+        return gf_rem(gf_mul(x, [1], self.p, ZZ), self.reducing, self.p, ZZ)
 
 #    def div(self, x, y):
 #        return gf_div
