@@ -21,7 +21,7 @@ class HEC_general():
 
     def h_canonic(self, h):
         if (self.field.p == 2):
-            self.h = self.field.mul([1], h)
+            self.h = self.field.reduce(h)
         else:
             self.h = []
 
@@ -29,7 +29,7 @@ class HEC_general():
         if (self.field.p != 2):
             h_inv = [ i * mod_inv(4, self.field.p) for i in h]
             f = self.field.add(f, self.field.mul(h, h_inv))
-        self.f = self.field.mul([1], f)
+        self.f = self.field.reduce(f)
 
     def is_canonic(self):
         return self.h == []

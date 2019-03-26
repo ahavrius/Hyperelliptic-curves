@@ -34,6 +34,12 @@ class GF():
     def mul(self, x, y):
         return gf_rem(gf_mul(x, y, self.p, ZZ), self.reducing, self.p, ZZ)
 
+    def  reduce(self, x):
+        return gf_rem(x, self.reducing, self.p, ZZ)
+
+#    def div(self, x, y):
+#        return gf_div
+
     def inv(self, x):
         s, t, h = gf_gcdex(x, self.reducing, self.p, ZZ)
         return s
