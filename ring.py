@@ -12,6 +12,7 @@ class PolyRing():
         self.a = a
         self.b = b
         self.simlify()
+        self.deg = self.get_degree()
 
     def simlify(self):
         self.a = self.field.reduce(self.a)
@@ -29,10 +30,12 @@ class PolyRing():
             print("Ring.norm Warning: norm worked incorrect for some reasons")
         return res.a
 
-    def get_degree(self, norma = 0):
-        if norma == 0:
-            norma = self.norm()
-        return len(norma)-1
+    def get_degree(self):
+        return max(2*poly_degree(self.a), 2*poly_degree(self.b) + 1 + 2*self.curve.genus)
+        #return poly_degree(self.norm())
+
+    def __eq__(self, other):
+        return self.field == other.field and self.curve == other.curve and self.a == other.a and other.b == self.b
 
     def __mul__(self, other):
         if self.curve != other.curve or self.field != other.field:
@@ -65,15 +68,15 @@ class PolyRing():
         a_str = [' {}u^{} '.format(a[i], i) for i in range(len(a)) if a[i] != 0]
         b_str = [' {}u^{} '.format(b[i], i) for i in range(len(b)) if b[i] != 0]
         if not a_str and not b_str:
-            res = 'G(u, v) = 0'
+            res = '0'
         else:
-            res = 'G(u, v) = ' + '+'.join(a_str) + '+ v(' + '+'.join(b_str) + ')'
+            res = '+'.join(a_str) + '+ v(' + '+'.join(b_str) + ')'
         res = res.replace('= +', '= ')
         res = res.replace('+ -', '- ')
         res = res.replace('+ v()', '')
         return res
 
-"""
+
 #Exanple
 crv = HEC(5, 3, [3, 3, 3], [1, 0, -5, 0, 4, 0])
 elem = PolyRing([4, 0, 9], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], crv)
@@ -81,4 +84,3 @@ print(elem)
 print(elem.conjugate())
 print(elem.norm())
 print(elem.get_degree())
-"""

@@ -14,6 +14,13 @@ class Point_of_HEC():
         self.x = x % self.field.p
         self.y = y % self.field.p
 
+    def __str__(self):
+        if self.is_inf:
+            point_str = 'point = Infinity'
+        else:
+            point_str = 'x = ' + str(self.x) + ' y = ' + str(self.y)
+        return  point_str + ' on ' + str(self.curve)
+
     @classmethod
     def infinit_point(cls, curve):
         elem = cls(0, 0, curve)
@@ -23,13 +30,12 @@ class Point_of_HEC():
     def is_finit(self):
         return not self.is_inf
 
-    @classmethod
-    def opposite(cls, point):
+    def opposite(self):
         if self.is_inf:
             return self
-        x = point.x
-        y = -point.y - poly_calc(x, point.curve.h[::-1])
-        return cls(x, y, point.curve)
+        x = self.x
+        y = -self.y - poly_calc(x, self.curve.h[::-1])
+        return Point_of_HEC(x, y, self.curve)
 
     def belong_curve(self):
         if self.is_inf:
@@ -48,5 +54,21 @@ class Point_of_HEC():
         return not self.is_spacial()
 
 class Point_of_Ring(Point_of_HEC):
-    def __init__(self, x, y, field):
-        super().__init__(x, y, field)
+    def __init__(self, x, y, poly):
+        super().__init__(x, y, poly.curve)
+        self.poly = poly
+
+    @classmethod
+    def infinit_point(cls, frac):
+        elem = cls(0, 0, frac)
+        elem.is_inf = True
+        return elem
+
+
+
+curve = HEC(7, 4, [4, 1], [3, 3, 3, 3, 3,3, 3])
+pnt = Point_of_HEC(32, -1200, curve)
+print(pnt)
+print(Point_of_HEC.infinit_point(curve))
+
+#pnt_ring = Point_of_Ring(32, -1200, curve)

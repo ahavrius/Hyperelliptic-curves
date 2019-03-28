@@ -33,6 +33,9 @@ class HEC():
     def is_canonic(self):
         return self.h == []
 
+    def __eq__(self, other):
+        return self.field == other.field and self.h == other.h and self.f == other.f
+
     def is_correct(self):
         u = np.arange(self.field.p)
         v = np.arange(self.field.p)
@@ -58,7 +61,7 @@ class HEC():
             f = self.f[::-1]
         return h, f
 
-    def drow_curve(self, real = True):
+    def draw_curve(self, real = True):
         y, x = np.ogrid[-10:10:300j, -10:10:300j]
         h, f = self._coef(real)
         plt.contour(x.ravel(), y.ravel(), pow(y, 2) + y * poly_calc(x, h) - poly_calc(x, f), [0])
@@ -75,6 +78,8 @@ class HEC():
         res = res.replace('+= ', '= ')
         res = res.replace('+ -', '- ')
         return res
+    def __str__(self):
+        return self.str(False)
 
 #    @classmethod
 
@@ -88,8 +93,8 @@ print(g)
 crv = HEC(5, 12, [], [1, 0, -5, 0, 4, 0])
 print(crv.h)
 print(crv.f)
-crv.drow_curve(True)
-crv.drow_curve(False)
+crv.draw_curve(True)
+crv.draw_curve(False)
 print(crv.is_correct())
 print (crv.str(True))
 """

@@ -24,6 +24,8 @@ class GF():
                 if gf_irreducible_p(poly, p, ZZ):
                     self.reducing = poly
                     break
+    def __eq__(self, other):
+        return self.p == other.p and self.n == other.n and self.reducing == other.reducing
 
     def add(self, x, y):
         return gf_add(x, y, self.p, ZZ)
@@ -78,6 +80,9 @@ class PolyRing():
             s = self.add(s, [self.K.mul(b, c) for b in p] + \
                          [[]] * (len(q) - j - 1))
         return s
+
+def poly_degree(poly):
+    return len(poly) - 1
 
 # to calculate invert elem of x modulo p - prime
 def mod_inv(x, p):
