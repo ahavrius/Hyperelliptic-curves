@@ -17,7 +17,7 @@ class HEC():
         self.h_canonic(h)
         self.f_canonic(h, f)
         self.simpify()
-        self.genus = gf_degree(f)/2 - 1
+        self.genus = (poly_degree(self.f)-1) // 2 #gf_degree
 
     def h_canonic(self, h):
         if (self.field.p == 2):

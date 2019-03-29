@@ -29,6 +29,19 @@ class PolyRing():
         if res.b:
             print("Ring.norm Warning: norm worked incorrect for some reasons")
         return res.a
+        #first = self.field.mul(self.a, self.a)
+        #second = self.field.mul(self.field.mul(self.a, self.b), self.curve.h)
+        #thirt = self.field.mul(self.field.mul(self.b, self.b), self.curve.f)
+        #return self.field.sub(self.field.add(first, second), thirt)
+    #def get_value_inf(self):
+
+    def get_value_inf(self):
+        return 'Inf'
+
+    def get_value(self, x, y):
+        a = self.a[::-1]
+        b = self.b[::-1]
+        return poly_calc(x, a) + y * poly_calc(x, b)
 
     def get_degree(self):
         return max(2*poly_degree(self.a), 2*poly_degree(self.b) + 1 + 2*self.curve.genus)
@@ -78,9 +91,24 @@ class PolyRing():
 
 
 #Exanple
-crv = HEC(5, 3, [3, 3, 3], [1, 0, -5, 0, 4, 0])
+crv = HEC(5, 17, [3, 3, 3], [1, -5, 0, 4, 0])
 elem = PolyRing([4, 0, 9], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], crv)
+elem2 = PolyRing([1, 2, 34, -1, 4], [1, 34, -1, 1, 1, 1, 1, 1], crv)
+
 print(elem)
-print(elem.conjugate())
-print(elem.norm())
-print(elem.get_degree())
+#print(elem.conjugate())
+#print (elem.conjugate().norm())
+#print(elem.norm())
+print (elem2.norm())
+print (elem2.get_degree())
+#print (elem2.conjugate().get_degree())
+#print ((elem*elem2).norm())
+#print (elem.field.mul(elem.norm(), elem2.norm()))
+
+#print(elem.get_degree())
+#print (poly_degree(elem.norm()))
+#print(elem.get_degree())
+#print (elem2.get_degree())
+#print (elem.get_degree() + elem2.get_degree())
+#elem02 = elem * elem2
+#print (elem02.get_degree())
